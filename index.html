@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>الأنشطة الداعمة في الرياضيات</title>
+
+<style>
+body {
+    font-family: Arial;
+    margin: 0;
+    background: linear-gradient(135deg, #0f172a, #1e40af);
+    color: white;
+    text-align: center;
+}
+
+.header {
+    padding: 20px;
+}
+
+.cards {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.card {
+    background: #1e293b;
+    padding: 15px;
+    border-radius: 15px;
+    width: 150px;
+}
+
+.score {
+    font-size: 20px;
+    margin: 10px;
+}
+
+.progress {
+    width: 80%;
+    height: 10px;
+    background: #ccc;
+    margin: auto;
+    border-radius: 10px;
+}
+
+.progress-bar {
+    height: 10px;
+    width: 0%;
+    background: limegreen;
+    border-radius: 10px;
+}
+
+.series button {
+    margin: 5px;
+    padding: 10px;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+}
+
+.exercise {
+    background: white;
+    color: black;
+    margin: 20px;
+    padding: 20px;
+    border-radius: 15px;
+}
+
+.correct { color: green; }
+.wrong { color: red; }
+
+button {
+    background: #2563eb;
+    color: white;
+}
+</style>
+</head>
+
+<body>
+
+<div class="header">
+<h1>📊 الأنشطة الداعمة في الرياضيات</h1>
+<p>المستوى الثالث ابتدائي</p>
+</div>
+
+<div class="cards">
+<div class="card">📘 الرياضيات</div>
+<div class="card">🎓 3 ابتدائي</div>
+<div class="card">📝 تمارين تفاعلية</div>
+<div class="card">📅 2026</div>
+</div>
+
+<div class="score">🏆 النقاط: <span id="score">0</span></div>
+
+<div class="progress">
+<div class="progress-bar" id="progress"></div>
+</div>
+
+<div class="series">
+<button onclick="loadSeries(1)">السلسلة 1</button>
+<button onclick="loadSeries(2)">السلسلة 2</button>
+<button onclick="loadSeries(3)">السلسلة 3</button>
+</div>
+
+<div id="content"></div>
+
+<button onclick="reset()">🔄 إعادة المحاولة</button>
+
+<footer>
+<p>Réalisé par: Mohamed</p>
+</footer>
+
+<script>
+let score = 0;
+let total = 0;
+
+function updateProgress(){
+    let percent = (score / total) * 100;
+    document.getElementById("progress").style.width = percent + "%";
+}
+
+function playSound(correct){
+    let audio = new Audio(correct ? 
+    "https://www.soundjay.com/buttons/sounds/button-3.mp3" : 
+    "https://www.soundjay.com/buttons/sounds/button-10.mp3");
+    audio.play();
+}
+
+function loadSeries(n){
+    score = 0;
+    total = 3;
+    document.getElementById("score").innerText = score;
+    updateProgress();
+
+    let content = document.getElementById("content");
+
+    if(n===1){
+        content.innerHTML = `
+        <div class="exercise">
+        7 + 5 = <input id="q1">
+        <button onclick="check('q1',12,'r1')">تحقق</button>
+        <p id="r1"></p>
+        </div>
+
+        <div class="exercise">
+        10 - 6 = <input id="q2">
+        <button onclick="check('q2',4,'r2')">تحقق</button>
+        <p id="r2"></p>
+        </div>
+
+        <div class="exercise">
+        3 × 3 = <input id="q3">
+        <button onclick="check('q3',9,'r3')">تحقق</button>
+        <p id="r3"></p>
+        </div>
+        `;
+    }
+
+    if(n===2){
+        content.innerHTML = `
+        <div class="exercise">
+        12 ÷ 3 = <input id="q4">
+        <button onclick="check('q4',4,'r4')">تحقق</button>
+        <p id="r4"></p>
+        </div>
+
+        <div class="exercise">
+        كم عدد أضلاع المثلث؟ <input id="q5">
+        <button onclick="check('q5',3,'r5')">تحقق</button>
+        <p id="r5"></p>
+        </div>
+
+        <div class="exercise">
+        15 + 5 = <input id="q6">
+        <button onclick="check('q6',20,'r6')">تحقق</button>
+        <p id="r6"></p>
+        </div>
+        `;
+    }
+
+    if(n===3){
+        content.innerHTML = `
+        <div class="exercise">
+        عندي 10 تفاحات أكلت 3 كم بقي؟ <input id="q7">
+        <button onclick="check('q7',7,'r7')">تحقق</button>
+        <p id="r7"></p>
+        </div>
+
+        <div class="exercise">
+        4 × 2 = <input id="q8">
+        <button onclick="check('q8',8,'r8')">تحقق</button>
+        <p id="r8"></p>
+        </div>
+
+        <div class="exercise">
+        طول 5 سم + 5 سم = <input id="q9">
+        <button onclick="check('q9',10,'r9')">تحقق</button>
+        <p id="r9"></p>
+        </div>
+        `;
+    }
+}
+
+function check(id, correct, resultId){
+    let value = document.getElementById(id).value;
+    let result = document.getElementById(resultId);
+
+    if(value == correct){
+        result.innerHTML = "✔️ صحيح";
+        result.className = "correct";
+        score++;
+        playSound(true);
+    } else {
+        result.innerHTML = "❌ خطأ";
+        result.className = "wrong";
+        playSound(false);
+    }
+
+    document.getElementById("score").innerText = score;
+    updateProgress();
+}
+
+function reset(){
+    score = 0;
+    document.getElementById("score").innerText = score;
+    document.getElementById("progress").style.width = "0%";
+    document.getElementById("content").innerHTML = "";
+}
+</script>
+
+</body>
+</html>
