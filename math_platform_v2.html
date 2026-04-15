@@ -1,1 +1,1523 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>الأنشطة الداعمة — الرياضيات</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&family=Baloo+Bhaijaan+2:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+/* ══════════════════════════════════════
+   CSS VARIABLES — DESIGN TOKENS
+══════════════════════════════════════ */
+:root {
+  --bg:           #FFF8F0;
+  --surface:      #FFFFFF;
+  --surface2:     #FFF3E6;
+  --border:       rgba(0,0,0,0.06);
+
+  --orange:       #FF6B35;
+  --orange-light: #FFE8DF;
+  --orange-dark:  #E55A27;
+  --yellow:       #FFD166;
+  --yellow-light: #FFF6DC;
+  --yellow-dark:  #E6BB58;
+  --green:        #06D6A0;
+  --green-light:  #D1FFF3;
+  --green-dark:   #05BF8E;
+  --blue:         #118AB2;
+  --blue-light:   #D4EEF7;
+  --blue-dark:    #0E7A9E;
+  --purple:       #9B5DE5;
+  --purple-light: #EDE0FF;
+  --red:          #FF6B6B;
+  --red-light:    #FFE0E0;
+
+  --text:         #2D3436;
+  --text-muted:   #636E72;
+  --text-light:   #B2BEC3;
+
+  --shadow-sm:    0 2px 8px rgba(0,0,0,0.07);
+  --shadow-md:    0 4px 16px rgba(0,0,0,0.1);
+  --shadow-lg:    0 8px 32px rgba(0,0,0,0.12);
+  --shadow-btn:   0 4px 0 ;
+
+  --radius-sm:    10px;
+  --radius-md:    16px;
+  --radius-lg:    22px;
+  --radius-xl:    28px;
+
+  --font-display: 'Baloo Bhaijaan 2', cursive;
+  --font-body:    'Tajawal', sans-serif;
+}
+
+/* ══════════════════════════════════════
+   RESET & BASE
+══════════════════════════════════════ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+
+body {
+  font-family: var(--font-body);
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* Hide number input arrows */
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; }
+input[type=number] { -moz-appearance: textfield; }
+
+/* ══════════════════════════════════════
+   CONFETTI CANVAS
+══════════════════════════════════════ */
+#confetti-canvas {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  pointer-events: none;
+  z-index: 200;
+  display: none;
+}
+
+/* ══════════════════════════════════════
+   HEADER
+══════════════════════════════════════ */
+.header {
+  background: linear-gradient(135deg, #FF6B35 0%, #FFD166 100%);
+  padding: 20px 16px 28px;
+  position: relative;
+  overflow: hidden;
+}
+
+.header::before {
+  content: '';
+  position: absolute;
+  top: -30px; left: -30px;
+  width: 120px; height: 120px;
+  background: rgba(255,255,255,0.12);
+  border-radius: 50%;
+}
+
+.header::after {
+  content: '';
+  position: absolute;
+  bottom: -20px; right: -20px;
+  width: 100px; height: 100px;
+  background: rgba(255,255,255,0.08);
+  border-radius: 50%;
+}
+
+.header-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
+  position: relative;
+  z-index: 1;
+}
+
+.score-pill {
+  background: rgba(255,255,255,0.25);
+  border: 2px solid rgba(255,255,255,0.4);
+  border-radius: 50px;
+  padding: 6px 14px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-display);
+  font-size: 16px;
+  font-weight: 700;
+  color: white;
+  backdrop-filter: blur(10px);
+}
+
+.score-num {
+  font-size: 20px;
+  font-weight: 800;
+  transition: all 0.3s;
+}
+
+.score-num.bump { animation: scoreBump 0.4s ease; }
+@keyframes scoreBump {
+  0%   { transform: scale(1); }
+  50%  { transform: scale(1.5); }
+  100% { transform: scale(1); }
+}
+
+.header-meta {
+  background: rgba(255,255,255,0.2);
+  border-radius: 50px;
+  padding: 5px 12px;
+  font-size: 12px;
+  font-weight: 700;
+  color: rgba(255,255,255,0.9);
+}
+
+.header-title {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+}
+
+.header-title h1 {
+  font-family: var(--font-display);
+  font-size: 26px;
+  font-weight: 800;
+  color: white;
+  line-height: 1.2;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  margin-bottom: 4px;
+}
+
+.header-title p {
+  font-size: 14px;
+  font-weight: 600;
+  color: rgba(255,255,255,0.85);
+}
+
+.header-mascot {
+  font-size: 52px;
+  position: absolute;
+  top: 12px;
+  left: 16px;
+  z-index: 1;
+  filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2));
+  animation: mascotFloat 3s ease-in-out infinite;
+}
+
+@keyframes mascotFloat {
+  0%, 100% { transform: translateY(0) rotate(-5deg); }
+  50%       { transform: translateY(-6px) rotate(5deg); }
+}
+
+/* ══════════════════════════════════════
+   PROGRESS SECTION
+══════════════════════════════════════ */
+.page-body {
+  padding: 0 14px 100px;
+}
+
+.progress-card {
+  background: var(--surface);
+  border-radius: var(--radius-lg);
+  padding: 16px 18px;
+  margin: -16px 0 16px;
+  box-shadow: var(--shadow-md);
+  border: 2px solid var(--border);
+}
+
+.progress-card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.progress-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.stars-row {
+  display: flex;
+  gap: 4px;
+}
+
+.star {
+  font-size: 22px;
+  transition: all 0.4s cubic-bezier(0.34,1.56,0.64,1);
+  filter: grayscale(1) brightness(1.5);
+  transform: scale(0.8);
+}
+
+.star.filled {
+  filter: grayscale(0);
+  transform: scale(1.1);
+  animation: starPop 0.4s ease;
+}
+
+@keyframes starPop {
+  0%   { transform: scale(0); }
+  60%  { transform: scale(1.3); }
+  100% { transform: scale(1.1); }
+}
+
+.progress-track {
+  background: #F0F0F0;
+  border-radius: 50px;
+  height: 14px;
+  overflow: hidden;
+  margin-bottom: 6px;
+}
+
+.progress-fill {
+  height: 100%;
+  border-radius: 50px;
+  background: linear-gradient(90deg, var(--orange), var(--yellow));
+  transition: width 0.7s cubic-bezier(0.34,1.56,0.64,1);
+  box-shadow: 0 0 10px rgba(255,107,53,0.4);
+  position: relative;
+  width: 0%;
+}
+
+.progress-fill::after {
+  content: '';
+  position: absolute;
+  top: 3px; right: 4px; bottom: 3px;
+  width: 30%;
+  background: rgba(255,255,255,0.35);
+  border-radius: 50px;
+}
+
+.progress-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: var(--text-light);
+  font-weight: 600;
+}
+
+/* ══════════════════════════════════════
+   SECTION HEADER
+══════════════════════════════════════ */
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+  margin-top: 20px;
+}
+
+.section-header h2 {
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.section-line {
+  flex: 1;
+  height: 2px;
+  background: linear-gradient(90deg, var(--border), transparent);
+  border-radius: 2px;
+}
+
+/* ══════════════════════════════════════
+   SERIES CARDS
+══════════════════════════════════════ */
+.series-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.series-card {
+  background: var(--surface);
+  border: 2.5px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 18px 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  text-align: center;
+  -webkit-tap-highlight-color: transparent;
+  position: relative;
+  overflow: hidden;
+}
+
+.series-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.3s;
+  border-radius: inherit;
+}
+
+.series-card:nth-child(1)::before { background: linear-gradient(135deg, rgba(255,107,53,0.08), rgba(255,209,102,0.08)); }
+.series-card:nth-child(2)::before { background: linear-gradient(135deg, rgba(17,138,178,0.08), rgba(6,214,160,0.08)); }
+
+.series-card:active { transform: scale(0.97); }
+
+.series-card:hover::before,
+.series-card.active::before { opacity: 1; }
+
+.series-card.active {
+  border-color: transparent;
+  box-shadow: var(--shadow-md), 0 0 0 2.5px var(--orange);
+}
+
+.series-card.done {
+  border-color: var(--green);
+  background: var(--green-light);
+}
+
+.series-card.done::before { opacity: 0 !important; }
+
+.series-icon {
+  font-size: 36px;
+  line-height: 1;
+  transition: transform 0.3s;
+}
+
+.series-card:hover .series-icon,
+.series-card.active .series-icon { transform: scale(1.1) rotate(-5deg); }
+
+.series-name {
+  font-family: var(--font-display);
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1.2;
+}
+
+.series-status {
+  font-size: 12px;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 50px;
+}
+
+.series-status.todo    { background: #F0F0F0;         color: var(--text-muted); }
+.series-status.active  { background: var(--orange-light); color: var(--orange); }
+.series-status.done    { background: var(--green-light);  color: var(--green-dark); }
+
+.series-stars {
+  display: flex;
+  gap: 2px;
+  font-size: 14px;
+}
+
+/* Full-width third card */
+.series-card-full {
+  background: var(--surface);
+  border: 2.5px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 16px 20px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  transition: all 0.2s ease;
+  -webkit-tap-highlight-color: transparent;
+  position: relative;
+  overflow: hidden;
+}
+
+.series-card-full::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(155,93,229,0.07), rgba(17,138,178,0.07));
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.series-card-full:hover::before,
+.series-card-full.active::before { opacity: 1; }
+
+.series-card-full.active {
+  border-color: transparent;
+  box-shadow: var(--shadow-md), 0 0 0 2.5px var(--purple);
+}
+
+.series-card-full.done {
+  border-color: var(--green);
+  background: var(--green-light);
+}
+
+.series-card-full:active { transform: scale(0.98); }
+
+.series-card-full .series-icon { font-size: 40px; }
+
+.series-card-full .series-info { flex: 1; }
+
+.series-card-full .series-name {
+  font-family: var(--font-display);
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.series-card-full .series-desc {
+  font-size: 12px;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+.series-card-full .series-arrow {
+  font-size: 20px;
+  color: var(--text-light);
+  transition: transform 0.2s;
+}
+
+.series-card-full:hover .series-arrow,
+.series-card-full.active .series-arrow {
+  transform: translateX(-4px);
+  color: var(--purple);
+}
+
+/* ══════════════════════════════════════
+   EXERCISES
+══════════════════════════════════════ */
+.exercises-wrapper {
+  animation: slideUp 0.4s ease;
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.exercises-progress {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.exercises-progress-label {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+.exercises-progress-track {
+  flex: 1;
+  height: 8px;
+  background: #F0F0F0;
+  border-radius: 50px;
+  overflow: hidden;
+}
+
+.exercises-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--orange), var(--yellow));
+  border-radius: 50px;
+  transition: width 0.5s ease;
+}
+
+.exercise-card {
+  background: var(--surface);
+  border: 2.5px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 20px 16px;
+  margin-bottom: 12px;
+  transition: all 0.3s ease;
+  animation: cardIn 0.35s ease backwards;
+  position: relative;
+  overflow: hidden;
+}
+
+@keyframes cardIn {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.exercise-card::after {
+  content: '';
+  position: absolute;
+  top: 0; right: 0;
+  width: 5px;
+  height: 100%;
+  background: linear-gradient(180deg, var(--orange), var(--yellow));
+  border-radius: 0 var(--radius-lg) var(--radius-lg) 0;
+  transition: background 0.3s;
+}
+
+.exercise-card.correct::after { background: var(--green); }
+.exercise-card.wrong::after   { background: var(--red); }
+
+.exercise-card.correct {
+  border-color: var(--green);
+  background: linear-gradient(135deg, #FAFFFD, var(--green-light));
+}
+
+.exercise-card.wrong {
+  border-color: var(--red);
+  background: var(--red-light);
+  animation: shake 0.4s ease;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20%       { transform: translateX(-8px); }
+  40%       { transform: translateX(8px); }
+  60%       { transform: translateX(-6px); }
+  80%       { transform: translateX(6px); }
+}
+
+.exercise-num-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: var(--orange-light);
+  color: var(--orange);
+  font-size: 11px;
+  font-weight: 800;
+  padding: 3px 10px;
+  border-radius: 50px;
+  margin-bottom: 12px;
+}
+
+.exercise-question {
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 16px;
+  line-height: 1.4;
+}
+
+.exercise-input-row {
+  display: flex;
+  gap: 8px;
+  align-items: stretch;
+}
+
+.answer-input {
+  flex: 0 0 90px;
+  background: #F7F7F7;
+  border: 2.5px solid #E0E0E0;
+  border-radius: var(--radius-md);
+  padding: 12px 8px;
+  font-family: var(--font-display);
+  font-size: 24px;
+  font-weight: 800;
+  color: var(--text);
+  text-align: center;
+  outline: none;
+  transition: all 0.25s;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.answer-input:focus {
+  border-color: var(--orange);
+  background: var(--orange-light);
+  box-shadow: 0 0 0 3px rgba(255,107,53,0.15);
+}
+
+.check-btn {
+  flex: 1;
+  background: linear-gradient(135deg, var(--orange), #FF8C5A);
+  color: white;
+  border: none;
+  border-radius: var(--radius-md);
+  padding: 12px 16px;
+  font-family: var(--font-body);
+  font-size: 16px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 0 var(--orange-dark);
+  -webkit-tap-highlight-color: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 52px;
+}
+
+.check-btn:hover { filter: brightness(1.05); }
+.check-btn:active {
+  transform: translateY(3px);
+  box-shadow: 0 1px 0 var(--orange-dark);
+}
+
+.check-btn:disabled {
+  background: linear-gradient(135deg, var(--green), #08E8AC);
+  box-shadow: 0 4px 0 var(--green-dark);
+  cursor: default;
+}
+
+.feedback-box {
+  margin-top: 12px;
+  border-radius: var(--radius-sm);
+  padding: 10px 12px;
+  font-size: 15px;
+  font-weight: 700;
+  display: none;
+  align-items: center;
+  gap: 8px;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.feedback-box.show { display: flex; }
+
+.feedback-box.correct-fb {
+  background: var(--green-light);
+  color: #037A5B;
+  border: 1.5px solid rgba(6,214,160,0.3);
+}
+
+.feedback-box.wrong-fb {
+  background: var(--red-light);
+  color: #C0392B;
+  border: 1.5px solid rgba(255,107,107,0.3);
+}
+
+.hint-btn {
+  display: none;
+  margin-top: 8px;
+  background: var(--yellow-light);
+  color: #7A5C00;
+  border: 1.5px solid rgba(255,209,102,0.5);
+  border-radius: var(--radius-sm);
+  padding: 8px 14px;
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  width: 100%;
+  text-align: center;
+  transition: all 0.2s;
+}
+
+.hint-btn:hover { background: var(--yellow); }
+.hint-btn.visible { display: block; animation: fadeIn 0.3s ease; }
+
+.hint-text {
+  display: none;
+  margin-top: 8px;
+  background: var(--yellow-light);
+  border: 1.5px solid rgba(255,209,102,0.6);
+  border-radius: var(--radius-sm);
+  padding: 10px 12px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #6B4E00;
+  animation: fadeIn 0.3s ease;
+}
+
+.hint-text.visible { display: block; }
+
+/* ══════════════════════════════════════
+   MOTIVATIONAL TICKER
+══════════════════════════════════════ */
+.ticker-bar {
+  background: linear-gradient(135deg, var(--blue-light), var(--purple-light));
+  border-radius: var(--radius-md);
+  padding: 12px 16px;
+  margin-top: 20px;
+  border: 1.5px solid rgba(17,138,178,0.15);
+  overflow: hidden;
+  position: relative;
+  min-height: 48px;
+  display: flex;
+  align-items: center;
+}
+
+.ticker-text {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--blue-dark);
+  animation: tickerFade 0.5s ease;
+  width: 100%;
+  text-align: center;
+}
+
+@keyframes tickerFade {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ══════════════════════════════════════
+   SERIES SUMMARY MODAL
+══════════════════════════════════════ */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(45,52,54,0.6);
+  backdrop-filter: blur(6px);
+  z-index: 150;
+  display: none;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 0;
+}
+
+.modal-overlay.show { display: flex; animation: fadeIn 0.3s ease; }
+
+.modal-sheet {
+  background: var(--surface);
+  border-radius: 28px 28px 0 0;
+  padding: 28px 20px 40px;
+  width: 100%;
+  max-width: 480px;
+  text-align: center;
+  animation: slideSheet 0.4s cubic-bezier(0.34,1.56,0.64,1);
+}
+
+@keyframes slideSheet {
+  from { transform: translateY(100%); }
+  to   { transform: translateY(0); }
+}
+
+.modal-sheet .big-emoji { font-size: 72px; display: block; margin-bottom: 12px; }
+.modal-sheet h2 {
+  font-family: var(--font-display);
+  font-size: 26px;
+  font-weight: 800;
+  color: var(--text);
+  margin-bottom: 6px;
+}
+.modal-sheet p {
+  font-size: 16px;
+  color: var(--text-muted);
+  font-weight: 600;
+  margin-bottom: 20px;
+}
+
+.modal-stars {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 20px;
+  font-size: 40px;
+}
+
+.modal-stats {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 24px;
+}
+
+.modal-stat {
+  flex: 1;
+  background: var(--bg);
+  border-radius: var(--radius-md);
+  padding: 12px 8px;
+}
+
+.modal-stat .stat-num {
+  font-family: var(--font-display);
+  font-size: 28px;
+  font-weight: 800;
+  color: var(--orange);
+  display: block;
+}
+
+.modal-stat .stat-label {
+  font-size: 12px;
+  color: var(--text-muted);
+  font-weight: 700;
+}
+
+.modal-btn {
+  width: 100%;
+  background: linear-gradient(135deg, var(--orange), #FF8C5A);
+  color: white;
+  border: none;
+  border-radius: var(--radius-lg);
+  padding: 16px;
+  font-family: var(--font-body);
+  font-size: 17px;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 4px 0 var(--orange-dark);
+  transition: all 0.2s;
+  margin-bottom: 10px;
+}
+
+.modal-btn:active { transform: translateY(3px); box-shadow: 0 1px 0 var(--orange-dark); }
+
+.modal-btn-secondary {
+  width: 100%;
+  background: transparent;
+  color: var(--text-muted);
+  border: 2px solid #E0E0E0;
+  border-radius: var(--radius-lg);
+  padding: 14px;
+  font-family: var(--font-body);
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.modal-btn-secondary:hover { background: var(--bg); }
+
+/* Badges */
+.badge-row {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 18px;
+  flex-wrap: wrap;
+}
+
+.badge {
+  background: var(--yellow-light);
+  border: 2px solid rgba(255,209,102,0.5);
+  border-radius: 50px;
+  padding: 5px 12px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #7A5C00;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  animation: badgePop 0.5s cubic-bezier(0.34,1.56,0.64,1) backwards;
+}
+
+@keyframes badgePop {
+  from { transform: scale(0); opacity: 0; }
+  to   { transform: scale(1); opacity: 1; }
+}
+
+/* ══════════════════════════════════════
+   RESET BUTTON
+══════════════════════════════════════ */
+.reset-section {
+  text-align: center;
+  margin-top: 28px;
+}
+
+.reset-btn {
+  background: transparent;
+  color: var(--text-muted);
+  border: 2px solid #E0E0E0;
+  border-radius: var(--radius-md);
+  padding: 12px 24px;
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.reset-btn:hover {
+  background: var(--red-light);
+  border-color: var(--red);
+  color: var(--red);
+}
+
+/* ══════════════════════════════════════
+   FOOTER
+══════════════════════════════════════ */
+.footer {
+  text-align: center;
+  padding: 24px 16px 32px;
+  color: var(--text-light);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.footer span {
+  color: var(--orange);
+  font-weight: 800;
+}
+
+/* ══════════════════════════════════════
+   EMPTY STATE
+══════════════════════════════════════ */
+.empty-hint {
+  text-align: center;
+  padding: 32px 20px;
+  color: var(--text-muted);
+}
+
+.empty-hint .hint-icon { font-size: 52px; margin-bottom: 12px; display: block; }
+.empty-hint p { font-size: 16px; font-weight: 700; line-height: 1.5; }
+.empty-hint small { font-size: 14px; font-weight: 500; color: var(--text-light); }
+</style>
+</head>
+<body>
+
+<canvas id="confetti-canvas"></canvas>
+
+<!-- ═══════════════════════════
+     HEADER
+═══════════════════════════ -->
+<header class="header">
+  <div class="header-top">
+    <div class="header-meta">📚 الثالث ابتدائي · 2026</div>
+    <div class="score-pill">
+      🌟 <span class="score-num" id="scoreDisplay">0</span> نقطة
+    </div>
+  </div>
+  <div class="header-title">
+    <h1>الأنشطة الداعمة</h1>
+    <p>مادة الرياضيات — تمارين تفاعلية ممتعة</p>
+  </div>
+  <div class="header-mascot">🧮</div>
+</header>
+
+<!-- ═══════════════════════════
+     PAGE BODY
+═══════════════════════════ -->
+<div class="page-body">
+
+  <!-- Progress Card -->
+  <div class="progress-card">
+    <div class="progress-card-top">
+      <div class="progress-title">📊 تقدمي اليوم</div>
+      <div class="stars-row">
+        <span class="star" id="star1">⭐</span>
+        <span class="star" id="star2">⭐</span>
+        <span class="star" id="star3">⭐</span>
+      </div>
+    </div>
+    <div class="progress-track">
+      <div class="progress-fill" id="mainProgress"></div>
+    </div>
+    <div class="progress-labels">
+      <span id="progressLabel">ابدأ بالتمارين</span>
+      <span id="progressPct">٠٪</span>
+    </div>
+  </div>
+
+  <!-- Series Section -->
+  <div class="section-header">
+    <h2>🎯 اختر التمارين</h2>
+    <div class="section-line"></div>
+  </div>
+
+  <div class="series-grid">
+    <div class="series-card" id="scard1" onclick="loadSeries(1)">
+      <div class="series-icon">📗</div>
+      <div class="series-name">التمارين<br>الأولى</div>
+      <div class="series-stars" id="sstars1">☆☆☆</div>
+      <div class="series-status todo" id="sstatus1">لم تبدأ</div>
+    </div>
+    <div class="series-card" id="scard2" onclick="loadSeries(2)">
+      <div class="series-icon">📘</div>
+      <div class="series-name">التمارين<br>الثانية</div>
+      <div class="series-stars" id="sstars2">☆☆☆</div>
+      <div class="series-status todo" id="sstatus2">لم تبدأ</div>
+    </div>
+  </div>
+
+  <div class="series-card-full" id="scard3" onclick="loadSeries(3)">
+    <div class="series-icon">📙</div>
+    <div class="series-info">
+      <div class="series-name">التمارين الثالثة</div>
+      <div class="series-desc" id="sdesc3">مسائل تطبيقية وتفكير رياضي</div>
+    </div>
+    <div class="series-stars" id="sstars3">☆☆☆</div>
+    <div class="series-arrow">←</div>
+  </div>
+
+  <!-- Active Exercises -->
+  <div id="exercisesSection" style="margin-top:20px;">
+    <div class="empty-hint">
+      <span class="hint-icon">👆</span>
+      <p>اختر مجموعة تمارين من الأعلى</p>
+      <small>وابدأ رحلتك في الرياضيات!</small>
+    </div>
+  </div>
+
+  <!-- Motivational Ticker -->
+  <div class="ticker-bar">
+    <div class="ticker-text" id="tickerText">💡 كل مسألة تحلها تجعلك أذكى وأقوى! 🧠</div>
+  </div>
+
+  <!-- Reset -->
+  <div class="reset-section">
+    <button class="reset-btn" onclick="resetAll()">🔄 ابدأ من جديد</button>
+  </div>
+
+</div>
+
+<!-- Footer -->
+<footer class="footer">
+  صُمِّم بـ 💛 بواسطة <span>Mohamed</span> — الأنشطة الداعمة في الرياضيات · 2026
+</footer>
+
+<!-- ═══════════════════════════
+     SUMMARY MODAL
+═══════════════════════════ -->
+<div class="modal-overlay" id="summaryModal">
+  <div class="modal-sheet">
+    <span class="big-emoji" id="modalEmoji">🎉</span>
+    <h2 id="modalTitle">رائع جداً!</h2>
+    <p id="modalSubtitle">لقد أنهيت التمارين بنجاح!</p>
+    <div class="modal-stars" id="modalStars">⭐⭐⭐</div>
+    <div class="modal-stats">
+      <div class="modal-stat">
+        <span class="stat-num" id="statScore">0</span>
+        <span class="stat-label">النقاط</span>
+      </div>
+      <div class="modal-stat">
+        <span class="stat-num" id="statCorrect">0</span>
+        <span class="stat-label">صحيحة</span>
+      </div>
+      <div class="modal-stat">
+        <span class="stat-num" id="statAttempts">0</span>
+        <span class="stat-label">المحاولات</span>
+      </div>
+    </div>
+    <div class="badge-row" id="badgeRow"></div>
+    <button class="modal-btn" onclick="closeModal(); nextSeries()">التمارين التالية 🚀</button>
+    <button class="modal-btn-secondary" onclick="closeModal()">العودة للرئيسية</button>
+  </div>
+</div>
+
+<script>
+/* ══════════════════════════════════════
+   DATA
+══════════════════════════════════════ */
+const SERIES = {
+  1: {
+    exercises: [
+      { id:'q1', q:'٧ + ٥ = ؟',                    a:12, hint:'٧ + ٣ = ١٠، ثم أضف ٢' },
+      { id:'q2', q:'١٠ − ٦ = ؟',                   a:4,  hint:'١٠ − ٥ = ٥، ثم انقص ١' },
+      { id:'q3', q:'٣ × ٣ = ؟',                    a:9,  hint:'٣ + ٣ + ٣ = ؟' },
+    ]
+  },
+  2: {
+    exercises: [
+      { id:'q4', q:'١٢ ÷ ٣ = ؟',                   a:4,  hint:'٣ × ؟ = ١٢' },
+      { id:'q5', q:'كم عدد أضلاع المثلث؟',          a:3,  hint:'المثلث له ٣ زوايا' },
+      { id:'q6', q:'١٥ + ٥ = ؟',                   a:20, hint:'١٥ + ٥ = ١٠ + ١٠ = ؟' },
+    ]
+  },
+  3: {
+    exercises: [
+      { id:'q7', q:'عندي ١٠ تفاحات، أكلت ٣، كم بقي؟', a:7, hint:'١٠ − ٣ = ؟' },
+      { id:'q8', q:'٤ × ٢ = ؟',                    a:8,  hint:'٤ + ٤ = ؟' },
+      { id:'q9', q:'طول ٥ سم + ٥ سم = ؟ سم',       a:10, hint:'٥ + ٥ = ١٠' },
+    ]
+  }
+};
+
+const TICKERS = [
+  '💡 كل مسألة تحلها تجعلك أذكى وأقوى! 🧠',
+  '⭐ أنت نجم الرياضيات — استمر هكذا!',
+  '💪 الأخطاء تعلمنا — لا تستسلم أبداً!',
+  '🚀 المثابرة هي سر النجاح!',
+  '🎯 ركّز وفكر — الجواب قريب منك!',
+  '📐 الرياضيات ممتعة إذا تدربت يومياً!',
+  '🏆 كل إجابة صحيحة تقربك من الهدف!',
+];
+
+const ENCOURAGEMENT_WRONG = [
+  'تقريباً! حاول مجدداً 💪',
+  'لا بأس! فكّر بهدوء 🤔',
+  'أنت قادر، حاول مرة أخرى! 🌟',
+];
+
+const ENCOURAGEMENT_CORRECT = [
+  'رائع! إجابة مثالية! 🌟',
+  'أحسنت! أنت ذكي جداً! 🎉',
+  'ممتاز! هكذا يحل العباقرة! 🧠',
+  'صحيح تماماً! نجم الفصل! ⭐',
+];
+
+/* ══════════════════════════════════════
+   STATE
+══════════════════════════════════════ */
+let state = {
+  score: 0,
+  totalAnswered: 0,
+  totalCorrect: 0,
+  currentSeries: null,
+  seriesProgress: { 1: null, 2: null, 3: null }, // { correct, attempts }
+  attempts: {},   // id -> count
+  answered: {},   // id -> bool
+};
+
+/* ══════════════════════════════════════
+   UTILS
+══════════════════════════════════════ */
+const toArabic = n => {
+  const map = {'0':'٠','1':'١','2':'٢','3':'٣','4':'٤','5':'٥','6':'٦','7':'٧','8':'٨','9':'٩'};
+  return String(n).replace(/[0-9]/g, d => map[d]);
+};
+
+const rand = arr => arr[Math.floor(Math.random() * arr.length)];
+
+let tickerTimer;
+function rotateTicker() {
+  clearInterval(tickerTimer);
+  let i = 0;
+  const el = document.getElementById('tickerText');
+  el.textContent = TICKERS[i];
+  tickerTimer = setInterval(() => {
+    i = (i + 1) % TICKERS.length;
+    el.style.animation = 'none';
+    void el.offsetWidth;
+    el.style.animation = 'tickerFade 0.5s ease';
+    el.textContent = TICKERS[i];
+  }, 5000);
+}
+
+/* ══════════════════════════════════════
+   PROGRESS & STARS
+══════════════════════════════════════ */
+function updateMainProgress() {
+  const done = Object.values(state.seriesProgress).filter(v => v !== null).length;
+  const totalCorrectDone = Object.values(state.seriesProgress)
+    .filter(v => v !== null)
+    .reduce((s, v) => s + v.correct, 0);
+  const maxPossible = 9;
+  const pct = Math.round((totalCorrectDone / maxPossible) * 100);
+  document.getElementById('mainProgress').style.width = pct + '%';
+  document.getElementById('progressPct').textContent = toArabic(pct) + '٪';
+  document.getElementById('progressLabel').textContent = done === 3 ? 'أنجزت جميع التمارين! 🎉' : `${toArabic(done)} من ٣ سلاسل مكتملة`;
+
+  // Stars
+  const starCount = Math.floor(totalCorrectDone / 3);
+  ['star1','star2','star3'].forEach((id, idx) => {
+    const el = document.getElementById(id);
+    if (idx < starCount) el.classList.add('filled');
+    else el.classList.remove('filled');
+  });
+}
+
+function updateScore(points) {
+  state.score += points;
+  const el = document.getElementById('scoreDisplay');
+  el.textContent = toArabic(state.score);
+  el.classList.remove('bump');
+  void el.offsetWidth;
+  el.classList.add('bump');
+}
+
+function updateSeriesCard(n, correct) {
+  const total = SERIES[n].exercises.length;
+  const starIcons = Array(total).fill('').map((_, i) => i < correct ? '⭐' : '☆').join('');
+  const isDone = correct === total;
+
+  if (n <= 2) {
+    const card = document.getElementById('scard' + n);
+    document.getElementById('sstars' + n).textContent = starIcons;
+    const statusEl = document.getElementById('sstatus' + n);
+    statusEl.textContent = isDone ? '✅ مكتمل' : 'جارٍ...';
+    statusEl.className = 'series-status ' + (isDone ? 'done' : 'active');
+    card.classList.remove('done');
+    if (isDone) card.classList.add('done');
+  } else {
+    document.getElementById('sstars' + n).textContent = starIcons;
+    document.getElementById('sdesc3').textContent = isDone ? '✅ مكتمل' : 'جارٍ...';
+    const card = document.getElementById('scard3');
+    card.classList.remove('done');
+    if (isDone) card.classList.add('done');
+  }
+}
+
+/* ══════════════════════════════════════
+   LOAD SERIES
+══════════════════════════════════════ */
+function loadSeries(n) {
+  state.currentSeries = n;
+
+  // Update button states
+  [1,2,3].forEach(i => {
+    const id = i <= 2 ? 'scard' + i : 'scard3';
+    document.getElementById(id).classList.remove('active');
+  });
+  document.getElementById('scard' + n).classList.add('active');
+
+  const ex = SERIES[n].exercises;
+  const section = document.getElementById('exercisesSection');
+
+  let html = `
+    <div class="section-header">
+      <h2>✏️ التمارين ${n === 1 ? 'الأولى' : n === 2 ? 'الثانية' : 'الثالثة'}</h2>
+      <div class="section-line"></div>
+    </div>
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
+      <span style="font-size:13px;font-weight:700;color:var(--text-muted);white-space:nowrap">التقدم</span>
+      <div style="flex:1;height:8px;background:#F0F0F0;border-radius:50px;overflow:hidden;">
+        <div id="exProgress" style="height:100%;background:linear-gradient(90deg,var(--orange),var(--yellow));border-radius:50px;transition:width 0.5s ease;width:0%;"></div>
+      </div>
+      <span id="exProgressLabel" style="font-size:12px;font-weight:700;color:var(--text-light);white-space:nowrap">٠ / ${toArabic(ex.length)}</span>
+    </div>
+    <div class="exercises-wrapper">
+  `;
+
+  ex.forEach((e, i) => {
+    html += `
+      <div class="exercise-card" id="card_${e.id}" style="animation-delay:${i*0.1}s">
+        <div class="exercise-num-badge">✏️ تمرين ${toArabic(i+1)} من ${toArabic(ex.length)}</div>
+        <div class="exercise-question">${e.q}</div>
+        <div class="exercise-input-row">
+          <input class="answer-input" type="number" id="${e.id}" inputmode="numeric"
+            autocomplete="off" placeholder="؟"
+            onkeydown="if(event.key==='Enter')check('${e.id}',${e.a},'${e.id}')"
+            aria-label="أدخل إجابتك للسؤال ${i+1}">
+          <button class="check-btn" id="btn_${e.id}"
+            onclick="check('${e.id}',${e.a},'${e.id}')"
+            aria-label="تحقق من الإجابة">
+            ✔ تحقق من إجابتي
+          </button>
+        </div>
+        <div class="feedback-box" id="fb_${e.id}"></div>
+        <button class="hint-btn" id="hint_${e.id}"
+          onclick="showHint('${e.id}','${e.hint}')">
+          🤫 أريد تلميحاً صغيراً
+        </button>
+        <div class="hint-text" id="hintText_${e.id}"></div>
+      </div>
+    `;
+  });
+
+  html += '</div>';
+  section.innerHTML = html;
+  section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+/* ══════════════════════════════════════
+   CHECK ANSWER
+══════════════════════════════════════ */
+function check(id, correct, _) {
+  if (state.answered[id]) return;
+
+  const n = state.currentSeries;
+  const input = document.getElementById(id);
+  const card  = document.getElementById('card_' + id);
+  const fb    = document.getElementById('fb_' + id);
+  const btn   = document.getElementById('btn_' + id);
+  const hintBtn = document.getElementById('hint_' + id);
+  const val   = parseFloat(input.value);
+
+  if (input.value === '' || isNaN(val)) {
+    input.style.borderColor = 'var(--orange)';
+    input.focus();
+    return;
+  }
+
+  state.attempts[id] = (state.attempts[id] || 0) + 1;
+
+  if (val == correct) {
+    // ✅ CORRECT
+    state.answered[id] = true;
+    state.totalCorrect++;
+
+    const pts = state.attempts[id] === 1 ? 3 : 1;
+    updateScore(pts);
+
+    card.classList.remove('wrong');
+    card.classList.add('correct');
+    fb.className = 'feedback-box show correct-fb';
+    fb.innerHTML = rand(ENCOURAGEMENT_CORRECT);
+    btn.disabled = true;
+    btn.innerHTML = '✅ صحيح!';
+    input.disabled = true;
+    input.style.borderColor = 'var(--green)';
+    if (hintBtn) hintBtn.style.display = 'none';
+
+    // Update exercise progress bar
+    const exCorrect = Object.keys(state.answered).filter(k =>
+      SERIES[n].exercises.some(e => e.id === k)
+    ).length;
+    const exTotal = SERIES[n].exercises.length;
+    const exPct = Math.round((exCorrect / exTotal) * 100);
+    const exProg = document.getElementById('exProgress');
+    const exProgLabel = document.getElementById('exProgressLabel');
+    if (exProg) exProg.style.width = exPct + '%';
+    if (exProgLabel) exProgLabel.textContent = `${toArabic(exCorrect)} / ${toArabic(exTotal)}`;
+
+    // Check if series complete
+    if (exCorrect === exTotal) {
+      const attempts = SERIES[n].exercises.reduce((s, e) => s + (state.attempts[e.id] || 0), 0);
+      state.seriesProgress[n] = { correct: exCorrect, attempts };
+      updateSeriesCard(n, exCorrect);
+      updateMainProgress();
+      setTimeout(() => showSummary(n, exCorrect, attempts), 700);
+    } else {
+      state.seriesProgress[n] = { correct: exCorrect, attempts: 0 };
+      updateSeriesCard(n, exCorrect);
+      updateMainProgress();
+    }
+
+  } else {
+    // ❌ WRONG
+    card.classList.remove('correct');
+    card.classList.add('wrong');
+    fb.className = 'feedback-box show wrong-fb';
+    fb.innerHTML = rand(ENCOURAGEMENT_WRONG);
+    input.style.borderColor = 'var(--red)';
+    input.value = '';
+    input.focus();
+
+    // After 2 wrong attempts, show hint button
+    if (state.attempts[id] >= 2) {
+      hintBtn.classList.add('visible');
+    }
+
+    // Reset card shake
+    setTimeout(() => {
+      card.classList.remove('wrong');
+      input.style.borderColor = '';
+    }, 800);
+  }
+}
+
+function showHint(id, hintText) {
+  const hintEl = document.getElementById('hintText_' + id);
+  const hintBtn = document.getElementById('hint_' + id);
+  hintEl.innerHTML = '🤫 ' + hintText;
+  hintEl.classList.add('visible');
+  hintBtn.style.display = 'none';
+}
+
+/* ══════════════════════════════════════
+   SUMMARY MODAL
+══════════════════════════════════════ */
+function showSummary(n, correct, attempts) {
+  const total = SERIES[n].exercises.length;
+  const perfect = correct === total && attempts === total;
+
+  document.getElementById('modalEmoji').textContent = perfect ? '🏆' : correct >= 2 ? '🎉' : '💪';
+  document.getElementById('modalTitle').textContent  = perfect ? 'مثالي تماماً!' : correct === total ? 'أحسنت!' : 'جيد! استمر';
+  document.getElementById('modalSubtitle').textContent =
+    `أنهيت التمارين ${n === 1 ? 'الأولى' : n === 2 ? 'الثانية' : 'الثالثة'} بنجاح!`;
+  document.getElementById('modalStars').textContent =
+    Array(total).fill('').map((_,i) => i < correct ? '⭐' : '☆').join(' ');
+
+  document.getElementById('statScore').textContent  = toArabic(state.score);
+  document.getElementById('statCorrect').textContent = toArabic(correct);
+  document.getElementById('statAttempts').textContent = toArabic(attempts);
+
+  // Badges
+  const badges = [];
+  if (perfect) badges.push({ icon:'💎', label:'بلا أخطاء' });
+  if (correct === total) badges.push({ icon:'⭐', label:'أنهيت السلسلة' });
+  if (attempts > total + 2) badges.push({ icon:'💪', label:'مثابر' });
+
+  const badgeRow = document.getElementById('badgeRow');
+  badgeRow.innerHTML = badges.map((b, i) =>
+    `<div class="badge" style="animation-delay:${i*0.15}s">${b.icon} ${b.label}</div>`
+  ).join('');
+
+  document.getElementById('summaryModal').classList.add('show');
+
+  if (perfect) launchConfetti();
+}
+
+function closeModal() {
+  document.getElementById('summaryModal').classList.remove('show');
+}
+
+function nextSeries() {
+  closeModal();
+  const next = state.currentSeries < 3 ? state.currentSeries + 1 : null;
+  if (next) loadSeries(next);
+  else window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+/* ══════════════════════════════════════
+   CONFETTI
+══════════════════════════════════════ */
+function launchConfetti() {
+  const canvas = document.getElementById('confetti-canvas');
+  canvas.style.display = 'block';
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  const ctx = canvas.getContext('2d');
+  const colors = ['#FF6B35','#FFD166','#06D6A0','#118AB2','#9B5DE5'];
+  const pieces = Array.from({length:120}, () => ({
+    x: Math.random() * canvas.width,
+    y: -20,
+    w: 8 + Math.random() * 8,
+    h: 4 + Math.random() * 4,
+    color: colors[Math.floor(Math.random() * colors.length)],
+    speed: 3 + Math.random() * 5,
+    angle: Math.random() * 360,
+    spin: (Math.random() - 0.5) * 10,
+    drift: (Math.random() - 0.5) * 2,
+  }));
+
+  let frame;
+  function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    let allDone = true;
+    pieces.forEach(p => {
+      p.y += p.speed;
+      p.x += p.drift;
+      p.angle += p.spin;
+      if (p.y < canvas.height + 20) allDone = false;
+      ctx.save();
+      ctx.translate(p.x, p.y);
+      ctx.rotate(p.angle * Math.PI / 180);
+      ctx.fillStyle = p.color;
+      ctx.fillRect(-p.w/2, -p.h/2, p.w, p.h);
+      ctx.restore();
+    });
+    if (!allDone) frame = requestAnimationFrame(draw);
+    else {
+      canvas.style.display = 'none';
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+  }
+  if (frame) cancelAnimationFrame(frame);
+  draw();
+}
+
+/* ══════════════════════════════════════
+   RESET
+══════════════════════════════════════ */
+function resetAll() {
+  if (!confirm('هل تريد حقاً البدء من جديد؟ ستُفقد جميع نقاطك!')) return;
+
+  state = {
+    score: 0,
+    totalAnswered: 0,
+    totalCorrect: 0,
+    currentSeries: null,
+    seriesProgress: { 1:null, 2:null, 3:null },
+    attempts: {},
+    answered: {},
+  };
+
+  document.getElementById('scoreDisplay').textContent = '0';
+  document.getElementById('mainProgress').style.width = '0%';
+  document.getElementById('progressPct').textContent = '٠٪';
+  document.getElementById('progressLabel').textContent = 'ابدأ بالتمارين';
+  ['star1','star2','star3'].forEach(id => document.getElementById(id).classList.remove('filled'));
+
+  // Reset cards
+  [1,2,3].forEach(n => {
+    const id = 'scard' + n;
+    const el = document.getElementById(id);
+    el.classList.remove('active','done');
+    if (n <= 2) {
+      document.getElementById('sstars' + n).textContent = '☆☆☆';
+      const st = document.getElementById('sstatus' + n);
+      st.textContent = 'لم تبدأ';
+      st.className = 'series-status todo';
+    } else {
+      document.getElementById('sstars3').textContent = '☆☆☆';
+      document.getElementById('sdesc3').textContent = 'مسائل تطبيقية وتفكير رياضي';
+    }
+  });
+
+  document.getElementById('exercisesSection').innerHTML = `
+    <div class="empty-hint">
+      <span class="hint-icon">👆</span>
+      <p>اختر مجموعة تمارين من الأعلى</p>
+      <small>وابدأ رحلتك في الرياضيات!</small>
+    </div>`;
+}
+
+/* ══════════════════════════════════════
+   INIT
+══════════════════════════════════════ */
+rotateTicker();
+</script>
+</body>
+</html>
 
